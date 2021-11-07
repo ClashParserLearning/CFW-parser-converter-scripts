@@ -1,3 +1,6 @@
+parsers:
+  - reg: .*
+    code: |
       module.exports.parse = async (raw, { axios, yaml, notify, console, homeDir }, { name, url, interval, selected, mode }) => {
         return tryClash(raw);
         function tryClash(raw){
