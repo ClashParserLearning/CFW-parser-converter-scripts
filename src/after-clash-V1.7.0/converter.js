@@ -6,6 +6,11 @@ module.exports.parse = async (raw, { axios, yaml, notify, console, homeDir }, { 
       if (obj.constructor !== Object){
         throw new Error('It seems that the subscription is not in clash form...');
       }
+      if (obj.constructor === Obj){
+        if (obj['Proxy'] && !obj['proxies']){
+          obj['proxies'] = obj['Proxy'];
+        }
+      }
       return yaml.stringify(obj);
     }catch(e){
       console.log(e.name + ' occurs.\n' + e.message + '\nParser trying to parse the content to clash profile.')
