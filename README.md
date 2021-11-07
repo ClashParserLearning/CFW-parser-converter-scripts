@@ -7,14 +7,16 @@
 
 ![图片](https://user-images.githubusercontent.com/93754998/140639785-2345d7bd-9d16-4a2a-92fc-e980e9072dc4.png)
 
-|版本|Github文件位置|Raw源链接|国内加速链接|
-|----|----|----|----|
-|2021.09.07 Premium及以后|[`位置点我`](https://github.com/ClashParserLearning/CFW-parser-converter-scripts/blob/main/src/after-clash-V1.7.0/converter.js)|[`Raw链接`](https://raw.githubusercontent.com/ClashParserLearning/CFW-parser-converter-scripts/main/src/after-clash-V1.7.0/converter.js)|[`加速Raw链接`](https://raw.sevencdn.com/ClashParserLearning/CFW-parser-converter-scripts/main/src/after-clash-V1.7.0/converter.js)|
-|2021.07.03 Premium及以前|[`位置点我`](https://github.com/ClashParserLearning/CFW-parser-converter-scripts/blob/main/src/from-clash-V1.0.0-to-V1.7.0/converter.js)|[`Raw链接`](https://raw.githubusercontent.com/ClashParserLearning/CFW-parser-converter-scripts/main/src/from-clash-V1.0.0-to-V1.7.0/converter.js)|[`加速Raw链接`](https://raw.sevencdn.com/ClashParserLearning/CFW-parser-converter-scripts/main/src/from-clash-V1.0.0-to-V1.7.0/converter.js)|
+|版本|Github文件位置|jsRaw源链接|js国内加速链接|即开即用文件地址|即开即用Raw源链接|即开即用Raw国内加速链接|
+|----|----|----|----|----|----|----|
+|2021.09.07 Premium及以后|[`位置点我`](https://github.com/ClashParserLearning/CFW-parser-converter-scripts/blob/main/src/after-clash-V1.7.0/converter.js)|[`jsRaw链接`](https://raw.githubusercontent.com/ClashParserLearning/CFW-parser-converter-scripts/main/src/after-clash-V1.7.0/converter.js)|[`js加速Raw链接（国内可用）`](https://raw.sevencdn.com/ClashParserLearning/CFW-parser-converter-scripts/main/src/after-clash-V1.7.0/converter.js)|[`parser格式化过的脚本 Github文件位置`](https://github.com/ClashParserLearning/CFW-parser-converter-scripts/blob/main/src/after-clash-V1.7.0/yaml/converter.yaml)|[`parser格式化过的脚本 Raw源链接`](https://raw.githubusercontent.com/ClashParserLearning/CFW-parser-converter-scripts/main/src/after-clash-V1.7.0/yaml/converter.yaml)|[`parser格式化过的脚本 加速链接（国内可用）`](https://raw.sevencdn.com/ClashParserLearning/CFW-parser-converter-scripts/main/src/after-clash-V1.7.0/yaml/converter.yaml)|
+|2021.07.03 Premium及以前|[`位置点我`](https://github.com/ClashParserLearning/CFW-parser-converter-scripts/blob/main/src/from-clash-V1.0.0-to-V1.7.0/converter.js)|[`Raw链接`](https://raw.githubusercontent.com/ClashParserLearning/CFW-parser-converter-scripts/main/src/from-clash-V1.0.0-to-V1.7.0/converter.js)|[`加速Raw链接（国内可用）`](https://raw.sevencdn.com/ClashParserLearning/CFW-parser-converter-scripts/main/src/from-clash-V1.0.0-to-V1.7.0/converter.js)|[`parser格式化过的脚本 Github文件位置`](https://github.com/ClashParserLearning/CFW-parser-converter-scripts/blob/main/src/from-clash-V1.0.0-to-V1.7.0/yaml/converter.yaml)|[`parser格式化过的脚本 Raw源链接`](https://raw.githubusercontent.com/ClashParserLearning/CFW-parser-converter-scripts/main/src/from-clash-V1.0.0-to-V1.7.0/yaml/converter.yaml)|[`parser格式化过的脚本 加速链接（国内可用）`](https://raw.sevencdn.com/ClashParserLearning/CFW-parser-converter-scripts/main/src/from-clash-V1.0.0-to-V1.7.0/yaml/converter.yaml)|
 
 点击**Raw链接**或者**加速Raw链接**之后，复制内容即为脚本
 
 按照[`Parser JavaScript`](https://docs.cfw.lbyczf.com/contents/parser.html#%E8%BF%9B%E9%98%B6%E6%96%B9%E6%B3%95-javascript)的格式写出 **(注意缩进)**
+
+或者你也可以使用**parser格式化过的脚本**，无需担心缩进问题，已经帮你写好了
 
 ![图片](https://user-images.githubusercontent.com/93754998/140639902-533846df-01b9-4a1f-b03a-044a88ea0854.png)
 
