@@ -90,17 +90,21 @@ module.exports.parse = async (raw, { axios, yaml, notify, console, homeDir }, { 
       //skipped
     }else if(jsonNode['net'] === 'ws'){
       node['network'] = 'ws';
-      if (jsonNode['host']){
+      if (typeof jsonNode['host'] !== 'undefined'){
         let tmp = {};
         tmp['headers'] = {};
         tmp['headers']['Host'] = jsonNode['host'];
         tmp['path'] = jsonNode['path'];
         node['ws-opts'] = tmp;
+        // The two below are for old versions before Clash releases v1.7.0 (Premium Release 2021.09.07), when Clash decided to change its  format for Vmess proxies. The old configuration is backward compatible to 2022.
+        node['ws-headers'] = {};
+        node['ws-headers']['Host'] = jsonNode['host'];
+        node['ws-path'] = jsonNode['path'];
       }
     }else if(jsonNode['net'] === 'h2'){
       node['network'] = 'h2';
       node['tls'] = true;
-      if (jsonNode['host']){
+      if (typeof jsonNode['host'] !== 'undefined'){
         let tmp = {};
         tmp['path'] = jsonNode['path'];
         tmp['host'] = jsonNode['host'].trim().split(',');
