@@ -162,7 +162,7 @@ module.exports.parse = async (raw, { axios, yaml, notify, console, homeDir }, { 
           }
         case 'protoparam':
           if(!!value){
-            node['protoparam'] = value;
+            node['protocol-param'] = value;
           }
         case 'remarks':
           node['name'] = (index + 1).toString() + ' SSR ' + value;
