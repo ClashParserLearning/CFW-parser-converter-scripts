@@ -5,10 +5,19 @@ module.exports.parse = async (raw, { axios, yaml, notify, console, homeDir }, { 
       let obj = yaml.parse(raw);
       if (obj.constructor !== Object){
         throw new Error('It seems that the subscription is not in clash form...');
-      }
-      if (obj.constructor === Object){
+      } else {
         if (obj['Proxy'] && !obj['proxies']){
           obj['proxies'] = obj['Proxy'];
+        }
+        for (let i = obj['proxies'].length; i--;){
+          if (obj['proxies'][i]['network'] === 'ws'){
+            if (!'ws-opts' in obj['proxies'][i]) {
+              obj['proxies'][i]['ws-opts'] = {};
+              obj['proxies'][i]['ws-opts']['headers'] = {};
+              obj['proxies'][i]['ws-opts']['headers']['Host'] = obj['proxies'][i]['ws-headers']['Host'];
+              obj['proxies'][i]['ws-opts']['path'] = obj['proxies'][i]['ws-path']||'';
+            }
+          }
         }
       }
       return yaml.stringify(obj);
@@ -96,6 +105,10 @@ module.exports.parse = async (raw, { axios, yaml, notify, console, homeDir }, { 
         tmp['headers']['Host'] = jsonNode['host'];
         tmp['path'] = jsonNode['path'];
         node['ws-opts'] = tmp;
+        // The two below are for old versions before Clash releases v1.7.0 (Premium Release 2021.09.07), when Clash decided to change its  format for Vmess proxies. The old configuration is backward compatible to 2022.
+        node['ws-headers'] = {};
+        node['ws-headers']['Host'] = jsonNode['host'];
+        node['ws-path'] = jsonNode['path'];
       }
     }else if(jsonNode['net'] === 'h2'){
       node['network'] = 'h2';
