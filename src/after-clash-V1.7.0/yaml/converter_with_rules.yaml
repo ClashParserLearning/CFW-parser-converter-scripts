@@ -112,7 +112,7 @@ parsers:
                       tmp['headers']['Host'] = jsonNode['host'];
                       tmp['path'] = jsonNode['path'];
                       node['ws-opts'] = tmp;
-                      // The two below are for old versions before Clash releases v1.7.0 (Premium Release 2021.09.07), when Clash decided to change its  format for Vmess proxies. The old configuration is backward compatible to 2022.
+                      // The two below are for old versions before Clash releases v1.7.0 (Premium Release 2021.09.07), when Clash decided to change its format for Vmess proxies. The old configuration is backward compatible to 2022.
                       node['ws-headers'] = {};
                       node['ws-headers']['Host'] = jsonNode['host'];
                       node['ws-path'] = jsonNode['path'];
@@ -298,13 +298,21 @@ parsers:
                       return (index + 1).toString() + type.substring(0,1).toUpperCase + type.substring(1);
               }
           }
+          axios.interceptors.response.use( // Add profile-update-interval in response headers for automatic updating
+            function (response) {
+              const edited_response = response;
+              edited_response.headers["profile-update-interval"] = "24"; // Update Interval (hour)
+              return edited_response;
+            },
+            function (error) { // Any status codes that falls outside the range of 2xx cause this function to trigger
+              return Promise.reject(error); // Do something with response error
+            }
+          );
+          raw["proxy-groups"].length = 0; // clear proxy-groups array
+          raw["rules"].length = 0; // clear rules array
+          //raw["rule-providers"].length = 0; // clear rule-providers array
+          return raw;
       }
-  - reg: .*
-    yaml:
-      commands:
-        - proxy-groups-
-        - rules-
-  - reg: .*
     yaml:
       prepend-proxy-groups:
         - name: FirstChoice
@@ -480,9 +488,8 @@ parsers:
         - RULE-SET,ProxyLite,FirstChoice
         - GEOIP,CN,DirectOrNot
         - MATCH,Others
-  - reg: .*
-    yaml:
       commands:
+        #- dns.enhanced-mode="fake-ip"
         - proxy-groups.FirstChoice.proxies=[]proxyNames|.*
         - proxy-groups.SecondChoice.proxies.3+[]proxyNames|.*
         - proxy-groups.Streaming.proxies.1+[]proxyNames|/Streaming|媒体|解锁|奈菲|奈飞|网飞|HBO|Media|youtube/
