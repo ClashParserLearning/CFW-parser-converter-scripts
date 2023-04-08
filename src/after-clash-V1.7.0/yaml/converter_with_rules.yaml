@@ -2,6 +2,15 @@ parsers:
   - reg: .*
     code: |
       module.exports.parse = async (raw, { axios, yaml, notify, console, homeDir }, { name, url, interval, selected, mode }) => {
+          // add 'profile-update-interval' in response headers for automatic updating
+          axios.interceptors.response.use(
+            function ({ headers, ...rest }) {
+              headers["profile-update-interval"] = "23"; // Update Interval (hour)
+              return { headers, ...rest };
+            },
+            function (error) {return Promise.reject(error);}
+          );
+          //return raw;
           return tryClash(raw);
           function tryClash(raw){
               try{
@@ -28,6 +37,9 @@ parsers:
                           }
                       }
                   }
+                  obj["proxy-groups"] = []; // empty proxy-groups array
+                  obj["rule-providers"] = []; // empty rule-providers array
+                  obj["rules"] = []; // empty rules array
                   return yaml.stringify(obj);
               }catch(e){
                   console.log(e.name + ' occurs.\n' + e.message + '\nParser trying to parse the content to clash profile.')
@@ -35,6 +47,9 @@ parsers:
                       let tmpproxies = parseB64Sub(raw);
                       let obj = {};
                       obj['proxies'] = tmpproxies;
+                      obj["proxy-groups"] = []; // empty proxy-groups array
+                      obj["rule-providers"] = []; // empty rule-providers array
+                      obj["rules"] = []; // empty rules array
                       return yaml.stringify(obj);
                   }catch(e){
                       console.log(e.name + ' occurs.\n' + e.message + '\nParse failed. Please check your subscription.')
@@ -298,20 +313,6 @@ parsers:
                       return (index + 1).toString() + type.substring(0,1).toUpperCase + type.substring(1);
               }
           }
-          axios.interceptors.response.use( // Add profile-update-interval in response headers for automatic updating
-            function (response) {
-              const edited_response = response;
-              edited_response.headers["profile-update-interval"] = "24"; // Update Interval (hour)
-              return edited_response;
-            },
-            function (error) { // Any status codes that falls outside the range of 2xx cause this function to trigger
-              return Promise.reject(error); // Do something with response error
-            }
-          );
-          raw["proxy-groups"].length = 0; // clear proxy-groups array
-          raw["rules"].length = 0; // clear rules array
-          //raw["rule-providers"].length = 0; // clear rule-providers array
-          return raw;
       }
     yaml:
       prepend-proxy-groups:
