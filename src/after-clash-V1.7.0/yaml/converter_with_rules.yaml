@@ -2,6 +2,15 @@ parsers:
   - reg: .*
     code: |
       module.exports.parse = async (raw, { axios, yaml, notify, console, homeDir }, { name, url, interval, selected, mode }) => {
+          // add 'profile-update-interval' in response headers for automatic updating
+          axios.interceptors.response.use(
+            function ({ headers, ...rest }) {
+              headers["profile-update-interval"] = "23"; // Update Interval (hour)
+              return { headers, ...rest };
+            },
+            function (error) {return Promise.reject(error);}
+          );
+          //return raw;
           return tryClash(raw);
           function tryClash(raw){
               try{
@@ -13,7 +22,7 @@ parsers:
                           obj['proxies'] = obj['Proxy'];
                           delete obj['Proxy'];
                       }
-                      console.log(obj.proxies.length);
+                      console.log(`Successfully imported ${obj.proxies.length} proxies`);
                       for (let i = obj.proxies.length; i--;){
                           if (obj.proxies[i].network === 'ws'){
                               if (!('ws-opts' in obj.proxies[i])) {
@@ -28,14 +37,20 @@ parsers:
                           }
                       }
                   }
+                  obj["proxy-groups"] = []; // empty proxy-groups array
+                  obj["rule-providers"] = []; // empty rule-providers array
+                  obj["rules"] = []; // empty rules array
                   return yaml.stringify(obj);
               }catch(e){
                   console.log(e.name + ' occurs.\n' + e.message + '\nParser trying to parse the content to clash profile.')
                   try{
                       let tmpproxies = parseB64Sub(raw);
-                      let obj = {};
-                      obj['proxies'] = tmpproxies;
-                      return yaml.stringify(obj);
+                      return yaml.stringify({
+                        proxies: tmpproxies,
+                        "proxy-groups": [],
+                        "rule-providers": [],
+                        "rules": []
+                      });
                   }catch(e){
                       console.log(e.name + ' occurs.\n' + e.message + '\nParse failed. Please check your subscription.')
                       return 'proxies: []';
@@ -52,7 +67,7 @@ parsers:
           function parseB64Sub(raw){
               let newProxies = [];
               let rawStr = raw.trim();
-              if (!!rawStr.match(/^(ssd:\/\/)/)){
+              if (rawStr.startsWith("ssd://")){
                   // ssd subscription matched.
                   let str = rawStr.substring(rawStr.indexOf(":") + 3, rawStr.length).trim();
                   addSSD(str, newProxies);
@@ -60,8 +75,7 @@ parsers:
                   let b64Content = b64DecodeUnicode(rawStr);
                   let b64Array = b64Content.split('\n');
                   for (let [k,v] of b64Array.entries()){
-                      let type = v.substring(0, v.indexOf(':'));
-                      let info = v.substring(v.indexOf(':') + 3);
+                      let [type, info] = v.split("://");
                       addNode(type, info, newProxies, k);
                   }
               }
@@ -112,7 +126,7 @@ parsers:
                       tmp['headers']['Host'] = jsonNode['host'];
                       tmp['path'] = jsonNode['path'];
                       node['ws-opts'] = tmp;
-                      // The two below are for old versions before Clash releases v1.7.0 (Premium Release 2021.09.07), when Clash decided to change its  format for Vmess proxies. The old configuration is backward compatible to 2022.
+                      // The two below are for old versions before Clash releases v1.7.0 (Premium Release 2021.09.07), when Clash decided to change its format for Vmess proxies. The old configuration is backward compatible to 2022.
                       node['ws-headers'] = {};
                       node['ws-headers']['Host'] = jsonNode['host'];
                       node['ws-path'] = jsonNode['path'];
@@ -299,12 +313,6 @@ parsers:
               }
           }
       }
-  - reg: .*
-    yaml:
-      commands:
-        - proxy-groups-
-        - rules-
-  - reg: .*
     yaml:
       prepend-proxy-groups:
         - name: FirstChoice
@@ -480,9 +488,8 @@ parsers:
         - RULE-SET,ProxyLite,FirstChoice
         - GEOIP,CN,DirectOrNot
         - MATCH,Others
-  - reg: .*
-    yaml:
       commands:
+        #- dns.enhanced-mode="fake-ip"
         - proxy-groups.FirstChoice.proxies=[]proxyNames|.*
         - proxy-groups.SecondChoice.proxies.3+[]proxyNames|.*
         - proxy-groups.Streaming.proxies.1+[]proxyNames|/Streaming|媒体|解锁|奈菲|奈飞|网飞|HBO|Media|youtube/
