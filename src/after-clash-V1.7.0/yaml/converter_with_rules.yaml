@@ -22,7 +22,7 @@ parsers:
                           obj['proxies'] = obj['Proxy'];
                           delete obj['Proxy'];
                       }
-                      console.log(obj.proxies.length);
+                      console.log(`Successfully imported ${obj.proxies.length} proxies`);
                       for (let i = obj.proxies.length; i--;){
                           if (obj.proxies[i].network === 'ws'){
                               if (!('ws-opts' in obj.proxies[i])) {
@@ -45,12 +45,12 @@ parsers:
                   console.log(e.name + ' occurs.\n' + e.message + '\nParser trying to parse the content to clash profile.')
                   try{
                       let tmpproxies = parseB64Sub(raw);
-                      let obj = {};
-                      obj['proxies'] = tmpproxies;
-                      obj["proxy-groups"] = []; // empty proxy-groups array
-                      obj["rule-providers"] = []; // empty rule-providers array
-                      obj["rules"] = []; // empty rules array
-                      return yaml.stringify(obj);
+                      return yaml.stringify({
+                        proxies: tmpproxies,
+                        "proxy-groups": [],
+                        "rule-providers": [],
+                        "rules": []
+                      });
                   }catch(e){
                       console.log(e.name + ' occurs.\n' + e.message + '\nParse failed. Please check your subscription.')
                       return 'proxies: []';
@@ -67,7 +67,7 @@ parsers:
           function parseB64Sub(raw){
               let newProxies = [];
               let rawStr = raw.trim();
-              if (!!rawStr.match(/^(ssd:\/\/)/)){
+              if (rawStr.startsWith("ssd://")){
                   // ssd subscription matched.
                   let str = rawStr.substring(rawStr.indexOf(":") + 3, rawStr.length).trim();
                   addSSD(str, newProxies);
@@ -75,8 +75,7 @@ parsers:
                   let b64Content = b64DecodeUnicode(rawStr);
                   let b64Array = b64Content.split('\n');
                   for (let [k,v] of b64Array.entries()){
-                      let type = v.substring(0, v.indexOf(':'));
-                      let info = v.substring(v.indexOf(':') + 3);
+                      let [type, info] = v.split("://");
                       addNode(type, info, newProxies, k);
                   }
               }
